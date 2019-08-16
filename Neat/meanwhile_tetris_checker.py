@@ -11,7 +11,7 @@ continueRunRun = 5;
 newRun = False;
 currentRun = 5;
 reRun = True;
-reRunGen = 60;
+reRunGen = 62;
 reRunRun = 5;
 steps_threshold = 10000;
 
