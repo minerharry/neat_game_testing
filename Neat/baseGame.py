@@ -17,14 +17,15 @@ def listifyArray(array):
 
 class EvalGame:
 
-    def __init__(self,gameClass):
+    def __init__(self,gameClass,**kwargs):
         self.gameClass = gameClass;
+        self.initInputs = kwargs;
 
     def start(self,runnerConfig):
-        return self.gameClass(runnerConfig);
+        return self.gameClass(runnerConfig,self.initInputs);
 
 class RunGame(ABC):
-    def __init__(self,runnerConfig):
+    def __init__(self,runnerConfig,kwargs):
         self.steps = 0;
         self.runConfig = runnerConfig;
 
@@ -73,7 +74,7 @@ class RunGame(ABC):
     
 
 class HoldRightGame(RunGame):
-    def __init__(self,runnerConfig):
+    def __init__(self,runnerConfig,kwargs):
         super().__init__(runnerConfig);
         self.coeff = runnerConfig.rightCoeff;
         self.position = 0.0;
@@ -127,7 +128,7 @@ class HoldRightGame(RunGame):
         return signed_field;
 
 class StarSmash(RunGame):
-    def __init__(self,runnerConfig):
+    def __init__(self,runnerConfig,kwargs):
         super().__init__(runnerConfig);
         self.height = 1; #0-7 height
         self.score = 0;
