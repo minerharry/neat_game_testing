@@ -198,6 +198,7 @@ class GameRunner:
                 for trial in range(runnerConfig.numTrials):
                     
                     runningGame = self.game.start(runnerConfig);
+                    fitness = 0;
                     while (runningGame.isRunning()):
                         #get the current inputs from the running game, as specified by the runnerConfig
                         gameData = runningGame.getData();
@@ -205,8 +206,10 @@ class GameRunner:
                         gameInput = net.advance(gameData, time_const, time_const);
 
                         runningGame.processInput(gameInput);
-                        
-                    fitnesses.append(runningGame.getFitnessScore());
+                        if (runnerConfig.fitness_collection_type != None and runnerConfig.fitness_collection_type == 'continuous'):
+                            fitness += runningGame.getFitnessScore();
+                    fitness += runningGame.getFitnessScore();
+                    fitnesses.append(fitness);
                     runningGame.close();
                 fitness = runnerConfig.fitnessFromArray(fitnesses);
                 genome.fitness = fitness;
@@ -229,17 +232,24 @@ class GameRunner:
         net = neat.nn.FeedForwardNetwork.create(genome,config);
         fitnesses = [];
         for trial in range(runnerConfig.numTrials):
-            #print('evaluating genome with id {0}, trial {1}'.format(genome_id,trial));
+            print('evaluating genome with id {0}, trial {1}'.format(genome.key,trial));
+            fitness = 0;
             runningGame = self.game.start(runnerConfig);
             while (runningGame.isRunning()):
                 #get the current inputs from the running game, as specified by the runnerConfig
                 gameData = runningGame.getData();
 
+                #print('input: {0}'.format(gameData));
                 gameInput = net.activate(gameData);
 
+                
                 runningGame.processInput(gameInput);
 
-            fitnesses.append(runningGame.getFitnessScore());
+                if (runnerConfig.fitness_collection_type != None and runnerConfig.fitness_collection_type == 'continuous'):
+                    fitness += runningGame.getFitnessScore();
+                    
+            fitness += runningGame.getFitnessScore();
+            fitnesses.append(fitness);
             runningGame.close();
 
         fitness = runnerConfig.fitnessFromArray(fitnesses);

@@ -45,6 +45,8 @@ def get_array_cell_names(array_size):
     return [str(i) + '-' + j for i in range(array_size[0]) for j in get_array_cell_names(array_size[1:])];
 
 class IOData:
+    convertable_types = [list];
+    
     def __init__(self,name,data_type,array_size=None):
         self.data_type = data_type;
         self.name = name;
@@ -55,6 +57,18 @@ class IOData:
             return [self.name];
         if (self.data_type == 'array'):
             return [self.name + ' ' + x for x in get_array_cell_names(self.array_size)];
+
+    @staticmethod
+    def convertableType(datum):
+        for convertType in convertable_types:
+            if (isinstance(datum,convertType)):
+                return true;
+        return false;
+
+    @classmethod
+    def datify(cls,datum,name):
+        if (isinstance(datum,list)):
+            return;
 
 
 

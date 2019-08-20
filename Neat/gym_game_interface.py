@@ -1,6 +1,6 @@
-import baseGame.RunGame
+from baseGame import RunGame
 from nes_py.wrappers import JoypadSpace
-from runnerConfiguration import RunnerConfig
+from runnerConfiguration import RunnerConfig, IOData
 from PIL import Image
 
 button_map = {
@@ -31,14 +31,14 @@ class GymRunnerConfig(RunnerConfig):
                  gym_action_function=None):
         super().__init__(gameFitnessFunction,
                          gameRunningFunction,
-                         recurrent,
-                         trial_fitness_aggregation,
-                         custom_fitness_aggregation,
-                         time_step,
-                         num_trials,
-                         returnData,
-                         gameName,
-                         num_generations);
+                         recurrent=recurrent,
+                         trial_fitness_aggregation=trial_fitness_aggregation,
+                         custom_fitness_aggregation=custom_fitness_aggregation,
+                         time_step=time_step,
+                         num_trials=num_trials,
+                         returnData=returnData,
+                         gameName=gameName,
+                         num_generations=num_generations);
         self.action_function = gym_action_function;
 
 class NESGymRunnerConfig(GymRunnerConfig):
@@ -55,30 +55,37 @@ class NESGymRunnerConfig(GymRunnerConfig):
                  gameName='gym_game',
                  num_generations=300,
                  gym_action_function=None,
-                 used_buttons=['right','left','down','up','b','a']):
+                 used_buttons=['right','left','down','up','B','A']):
         super().__init__(gameFitnessFunction,
-                         gameRunningFunction,
-                         recurrent,
-                         trial_fitness_aggregation,
-                         custom_fitness_aggregation,
-                         time_step,
-                         num_trials,
-                         returnData,
-                         gameName,
-                         num_generations,
-                         gym_action_function);
+                         gameRunningFunction=gameRunningFunction,
+                         recurrent=recurrent,
+                         trial_fitness_aggregation=trial_fitness_aggregation,
+                         custom_fitness_aggregation=custom_fitness_aggregation,
+                         time_step=time_step,
+                         num_trials=num_trials,
+                         returnData=returnData,
+                         gameName=gameName,
+                         num_generations=num_generations,
+                         gym_action_function=gym_action_function);
         self.used_buttons = used_buttons;
         
-class GymEnvGame(baseGame.RunGame):
+class GymEnvGame(RunGame):
     def __init__(self,runnerConfig,kwargs):
-        
+        super().__init__(runnerConfig,kwargs);
+        self.done = False
+        self.info = {};
         self.env = kwargs['env'];
         self.runConfig = runnerConfig;
+        self.processInput([]);
 
     def processInput(self, inputs):
+        #print('processing');
         state, reward, done, info = self.env.step(self.do_action_function(inputs));
+        #print(info);
+        self.env.render();
         self.info = info;
         self.info['done'] = done;
+        self.info['gym-reward'] = reward;
         self.done = done;
         self.state = state;
 
@@ -93,7 +100,7 @@ class GymEnvGame(baseGame.RunGame):
     def isRunning(self):
         if (self.runConfig.gameStillRunning != None):
             return self.runConfig.gameStillRunning(self.getMappedData());
-        return self.done;
+        return not(self.done);
 
     def close(self):
         self.env.reset();
@@ -111,12 +118,14 @@ class NesPyGymGame(GymEnvGame):
             used_buttons = self.runConfig.used_buttons;
         inputs = dict(zip(used_buttons,inputs));
         action_int = 0;
-        for name,val in inputs:
+       # print(inputs);
+        for name, val in inputs.items():
             if (val > 0):
                 action_int |= button_map[name];
         return action_int;
 
-    def render_input(self,inputs):
+
+    def renderInput(self,inputs):
         self.process_input(inputs);
         return Image.fromarray(self.state);
         

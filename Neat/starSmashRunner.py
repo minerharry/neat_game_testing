@@ -7,9 +7,9 @@ import neat
 game = EvalGame(StarSmash);
 continueRun = False;
 continueRunRun = 6;
-newRun = True;
+newRun = False;
 currentRun = 9;
-reRun = False;
+reRun = True;
 reRunGen = 251;
 reRunRun = 8;
 steps_threshold = 1000;

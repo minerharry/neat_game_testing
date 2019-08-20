@@ -75,7 +75,7 @@ class RunGame(ABC):
 
 class HoldRightGame(RunGame):
     def __init__(self,runnerConfig,kwargs):
-        super().__init__(runnerConfig);
+        super().__init__(runnerConfig,kwargs);
         self.coeff = runnerConfig.rightCoeff;
         self.position = 0.0;
 
@@ -129,7 +129,7 @@ class HoldRightGame(RunGame):
 
 class StarSmash(RunGame):
     def __init__(self,runnerConfig,kwargs):
-        super().__init__(runnerConfig);
+        super().__init__(runnerConfig,kwargs);
         self.height = 1; #0-7 height
         self.score = 0;
         self.level = 0;

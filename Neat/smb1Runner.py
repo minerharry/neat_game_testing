@@ -1,38 +1,43 @@
 from game_runner_neat import GameRunner 
 from runnerConfiguration import RunnerConfig, IOData
 from baseGame import EvalGame
-from tetris import Tetris, TetrisRunnerConfig
+from gym_game_interface import NESGymRunnerConfig,NesPyGymGame
 import os
 import neat
-import gym
+import gym_super_mario_bros
 
-game = EvalGame(Tetris);
+smb1Env = gym_super_mario_bros.make('SuperMarioBros-v0')
+smb1Env.reset();
+game = EvalGame(NesPyGymGame,env=smb1Env);
 continueRun = True;
-continueRunRun = 5;
+continueRunRun = 0;
 newRun = False;
-currentRun = 5;
+currentRun = 0;
 reRun = False;
 reRunGen = 11;
 reRunRun = 5;
-steps_threshold = 10000;
+steps_threshold = 1000;
+
 
 def getFitness(inputs):
-    return inputs['cleared_lines']+(0.01*inputs['line_density'])+(0.00001 * inputs['steps']) + (inputs['cleared_lines']/(1+inputs['steps'])*20);
+    return inputs['gym-reward'];
 
 def getRunning(inputs):
-    return inputs['is_alive'] and (inputs['steps']<steps_threshold);
+    return (not(inputs['done']) and (not inputs['stillness_time'] > steps_threshold));
 
-runConfig = TetrisRunnerConfig(getFitness,getRunning,parallel=False,returnData=['piece_id','piece_x','piece_y','piece_rotation',IOData('contours','array',array_size=[10])],gameName='Tetris',num_trials=100,num_generations=None);
+
+runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=5),IOData('enemy_y','array',array_size=5),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
 runConfig.playback_fps = 20;
+runConfig.fitness_collection_type='continuous'
+print(runConfig.gameName);
 
-smb1Env = 
-runner = GameRunner(game,runConfig,env=smb1Env);
+runner = GameRunner(game,runConfig);
 if (continueRun):
     winner = runner.continue_run('run_' + str(continueRunRun));
     print('\nBest genome:\n{!s}'.format(winner));
 else:
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-tetris-gamerunner')
+    config_path = os.path.join(local_dir, 'config-gym-nes-smb1')
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)
