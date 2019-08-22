@@ -6,17 +6,17 @@ import os
 import neat
 import gym_super_mario_bros
 
-smb1Env = gym_super_mario_bros.make('SuperMarioBros-v0')
+smb1Env = gym_super_mario_bros.make('SuperMarioBros-4-3-v0')
 smb1Env.reset();
 game = EvalGame(NesPyGymGame,env=smb1Env);
-continueRun = True;
+continueRun = False;
 continueRunRun = 0;
 newRun = False;
 currentRun = 0;
-reRun = False;
-reRunGen = 11;
-reRunRun = 5;
-steps_threshold = 1000;
+reRun = True;
+reRunGen = 1;
+reRunRun = 0;
+steps_threshold = 400;
 
 
 def getFitness(inputs):
@@ -26,7 +26,7 @@ def getRunning(inputs):
     return (not(inputs['done']) and (not inputs['stillness_time'] > steps_threshold));
 
 
-runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=5),IOData('enemy_y','array',array_size=5),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
+runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=[5]),IOData('enemy_y','array',array_size=[5]),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
 runConfig.playback_fps = 20;
 runConfig.fitness_collection_type='continuous'
 print(runConfig.gameName);
