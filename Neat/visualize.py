@@ -198,7 +198,7 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
             width = str(0.1 + abs(cg.weight / 5.0))
             dot.edge(a, b, _attributes={'style': style, 'color': color, 'penwidth': width,'tooltip': 'weight: ' + str(cg.weight)})
 
-    filepath =  os.path.join(os.environ['HOME'] '\\Documents\\' + filename + '.gv');
+    filepath =  os.path.join(os.environ['HOME'], '\\Documents\\' + filename + '.gv');
     print(filepath)
     dot.render(filename=filepath, view=True);
     
