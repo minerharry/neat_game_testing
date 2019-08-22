@@ -135,8 +135,8 @@ class TetrisRunnerConfig(RunnerConfig):
         self.frames_per_drop = 8;
 
 class Tetris(baseGame.RunGame):
-        def __init__(self,runnerConfig):
-                super().__init__(runnerConfig);
+        def __init__(self,runnerConfig,kwargs):
+                super().__init__(runnerConfig,kwargs);
                 self.width = self.runConfig.cell_size*self.runConfig.cols
                 self.height = self.runConfig.cell_size*self.runConfig.rows
                 self.side_panel_width = 300;
