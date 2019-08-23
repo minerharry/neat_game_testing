@@ -146,7 +146,7 @@ class NesPyGymGame(GymEnvGame):
         action_int = 0;
        # print(inputs);
         for name, val in inputs.items():
-            if (val > 0):
+            if (val > 0.1):
                 action_int |= button_map[name];
         return action_int;
 

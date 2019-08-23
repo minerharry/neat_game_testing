@@ -11,11 +11,11 @@ smb1Env.reset();
 game = EvalGame(NesPyGymGame,env=smb1Env);
 continueRun = False;
 continueRunRun = 2;
-newRun = True;
+newRun = False;
 currentRun = 4;
-reRun = False;
-reRunGen = 8;
-reRunRun = 1;
+reRun = True;
+reRunGen = 5;
+reRunRun = 4;
 steps_threshold = 400;
 
 
