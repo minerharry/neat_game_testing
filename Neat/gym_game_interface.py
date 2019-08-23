@@ -79,32 +79,36 @@ class GymEnvGame(RunGame):
         self.processInput([]);
 
     def processInput(self, inputs):
-        #print('processing');
-        self.env.ram[0x0773] = 0x02;
-        self.env.ram[0x074E] = 0x01;
-        #print(self.env.ram[0x0744]);
-        self.env.ram[0x000F] = 0x00;
-        array = ([[self.env.ram[16*i+j+0x0500] for j in range(16)] for i in range (13)]);
-        [print(array[i]) for i in range(len(array))];
-        array = ([[self.env.ram[16*i+j+0x05D0] for j in range(16)] for i in range (13)]);
-        [print(array[i]) for i in range(len(array))];
-        #print(len(array));
-        self.env.ram[0x0744] = 0x0F;
-        #self.env.ram[0x05C0] = 43;
-        print("page left: ",self.env.ram[0x071a]);
-        print("page right: ",self.env.ram[0x071b]);
-        print("screen left: ",self.env.ram[0x071c]);
-        print("6b: ",self.env.ram[0x6b]);
-        print("mario x: ",self.env.ram[0x071c] + self.env.ram[0x86]);
-        print("mario block: ",(self.env.ram[0x071c] + self.env.ram[0x86])/16);
-        print("mario x 2: ", self.env.ram[0x6d]*0x100 + self.env.ram[0x86]);
-        print("mario block 2: ",(self.env.ram[0x6d]*0x100 + self.env.ram[0x86])/16);
-        print("mario vLow: ",self.env.ram[0x00b5]);
-        print("mario vHi: ",self.env.ram[0x00ce]);
-        print("mario vRel: ",self.env.ram[0x03b8]);
+##        #print('processing');
+##        self.env.ram[0x0773] = 0x02;
+##        self.env.ram[0x074E] = 0x01;
+##        #print(self.env.ram[0x0744]);
+##        self.env.ram[0x000F] = 0x00;
+##        array = ([[self.env.ram[16*i+j+0x0500] for j in range(16)] for i in range (13)]);
+##        #[print(array[i]) for i in range(len(array))];
+##        array = ([[self.env.ram[16*i+j+0x05D0] for j in range(16)] for i in range (13)]);
+##        #[print(array[i]) for i in range(len(array))];
+##        #print(len(array));
+##        self.env.ram[0x0744] = 0x0F;
+##        #self.env.ram[0x05C0] = 43;
+##        print("page left: ",self.env.ram[0x071a]);
+##        print("page right: ",self.env.ram[0x071b]);
+##        #print("screen left: ",self.env.ram[0x071c]);
+##        #print("6b: ",self.env.ram[0x6b]);
+##        #print("mario x: ",self.env.ram[0x071c] + self.env.ram[0x86]);
+##        #print("mario block: ",(self.env.ram[0x071c] + self.env.ram[0x86])/16);
+##        print("mario x 2: ", self.env.ram[0x6d]*0x100 + self.env.ram[0x86]);
+##        print("mario block 2: ",(self.env.ram[0x6d]*0x100 + self.env.ram[0x86])/16);
+##        #print("mario vLow: ",self.env.ram[0x00b5]);
+##        #print("mario vHi: ",self.env.ram[0x00ce]);
+##        #print("mario vRel: ",self.env.ram[0x03b8]);
+##        
         state, reward, done, info = self.env.step(self.do_action_function(inputs));
         #print(info);
-        self.env.render();
+##        [print(info['blocks'][i]) for i in range(len(info['blocks']))];
+##        if (self.env.ram[0x00CE] > 20):
+##            self.env.ram[0x00CE] = 0;
+        #self.env.render();
         self.info = info;
         self.info['done'] = done;
         self.info['gym-reward'] = reward;
@@ -149,6 +153,7 @@ class NesPyGymGame(GymEnvGame):
 
     def renderInput(self,inputs):
         self.processInput(inputs);
+        self.env.render();
         return Image.fromarray(self.state);
         
    

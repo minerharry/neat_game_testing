@@ -232,7 +232,7 @@ class GameRunner:
         net = neat.nn.FeedForwardNetwork.create(genome,config);
         fitnesses = [];
         for trial in range(runnerConfig.numTrials):
-            print('evaluating genome with id {0}, trial {1}'.format(genome.key,trial));
+            #print('evaluating genome with id {0}, trial {1}'.format(genome.key,trial));
             fitness = 0;
             runningGame = self.game.start(runnerConfig);
             while (runningGame.isRunning()):
