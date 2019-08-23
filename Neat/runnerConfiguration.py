@@ -10,6 +10,7 @@ class RunnerConfig:
         self.numTrials = num_trials;
         self.fitnessFromGameData = gameFitnessFunction;
         self.gameStillRunning = gameRunningFunction;
+        
 
         self.returnData = returnData;
 ##        for (datum in returnData):

@@ -129,6 +129,7 @@ class TetrisRunnerConfig(RunnerConfig):
                  num_generations=300,cols=10,rows=20,gameName='Tetris'):
         super().__init__(gameFitnessFunction,gameRunningFunction,recurrent=recurrent,trial_fitness_aggregation=trial_fitness_aggregation,custom_fitness_aggregation=custom_fitness_aggregation,time_step=time_step,num_trials=num_trials,parallel=parallel,returnData=returnData,
                  num_generations=num_generations,gameName=gameName);
+        self.fitness_collection_type = None;
         self.cols = cols;
         self.rows = rows;
         self.cell_size = 20;
@@ -244,7 +245,7 @@ class Tetris(baseGame.RunGame):
             if (inputs[2]>0):
                 self.drop();
 
-            if (inputs[3]>0):
+            if (inputs[3]>0.01):
                 self.rotate_stone();
 
             if (self.steps % 8 == 0):
