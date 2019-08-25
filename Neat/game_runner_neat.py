@@ -239,7 +239,7 @@ class GameRunner:
                 #get the current inputs from the running game, as specified by the runnerConfig
                 gameData = runningGame.getData();
 
-                #print('input: {0}'.format(gameData));
+                print('input: {0}'.format(gameData));
                 gameInput = net.activate(gameData);
 
                 
