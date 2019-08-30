@@ -108,7 +108,7 @@ class GymEnvGame(RunGame):
 ##        [print(info['blocks'][i]) for i in range(len(info['blocks']))];
 ##        if (self.env.ram[0x00CE] > 20):
 ##            self.env.ram[0x00CE] = 0;
-        #self.env.render();
+        self.env.render();
         self.info = info;
         self.info['done'] = done;
         self.info['gym-reward'] = reward;

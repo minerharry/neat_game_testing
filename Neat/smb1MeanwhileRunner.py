@@ -13,10 +13,10 @@ continueRun = False;
 continueRunRun = 2;
 newRun = False;
 currentRun = 4;
-reRun = True;
-reRunGen = 5;
-reRunRun = 4;
-steps_threshold = 400;
+reRun = False;
+reRunGen = 180;
+reRunRun = 0;
+steps_threshold = 600;
 
 
 def getFitness(inputs):
@@ -41,6 +41,8 @@ else:
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)
+    runner.render_worst_genome(reRunGen,config,'run_' + str(reRunRun),net=True);
+    
     if (newRun):
         winner = runner.run(config,'run_' + str(currentRun));
         print('\nBest genome:\n{!s}'.format(winner))

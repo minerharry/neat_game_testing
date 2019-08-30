@@ -80,6 +80,15 @@ class GameRunner:
                     break;
         [print (connectedGenome) for connectedGenome in connected];
 
+    def render_worst_genome(self,generation,config,run_name,net=False):
+        file = 'checkpoints\\games\\'+self.runConfig.gameName.replace(' ','_')+'\\'+run_name.replace(' ','_')+'\\run-checkpoint-' + str(generation);
+        pop = neat.Checkpointer.restore_checkpoint(file);
+        worst = None
+        for g in itervalues(pop.population):
+            if worst is None or g.fitness < worst.fitness:
+                worst = g
+        self.render_genome_by_id(worst.key,generation,config,run_name,net=net);
+
     def render_genome_by_id(self,genomeId,generation,config,run_name,net=False):
         file = 'checkpoints\\games\\'+self.runConfig.gameName.replace(' ','_')+'\\'+run_name.replace(' ','_')+'\\run-checkpoint-' + str(generation);
         pop = neat.Checkpointer.restore_checkpoint(file);
@@ -239,7 +248,7 @@ class GameRunner:
                 #get the current inputs from the running game, as specified by the runnerConfig
                 gameData = runningGame.getData();
 
-                print('input: {0}'.format(gameData));
+                #print('input: {0}'.format(gameData));
                 gameInput = net.activate(gameData);
 
                 

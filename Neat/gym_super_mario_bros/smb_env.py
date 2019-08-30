@@ -74,6 +74,10 @@ class SuperMarioBrosEnv(NESEnv):
         # setup a variable to keep track of the last frames x position
         self._x_position_last = 0
         self._stillness_frame_count = 0;
+        self._max_x = 0;
+        self._last_area = 0;
+        self._last_stage = 0;
+        self._last_level = 0;
         # reset the emulator
         self.reset()
         # skip the start screen
@@ -344,6 +348,7 @@ class SuperMarioBrosEnv(NESEnv):
         """Return the reward based on left right movement between steps."""
         _reward = self._x_position - self._x_position_last
         self._x_velocity = _reward;
+        
         self._x_position_last = self._x_position
         # TODO: check whether this is still necessary
         # resolve an issue where after death the x position resets. The x delta
@@ -392,10 +397,20 @@ class SuperMarioBrosEnv(NESEnv):
 
     @property
     def _stillness_frames(self):
-        if (self._x_velocity < 0.1):
+        if (self._last_level != self._level or self._last_area != self._area or self._last_stage != self._area)
+            self._max_x = 0;
+
+        self._last_level = self._level;
+        self._last_area = self._area;
+        self._last_stage = self._stage;
+        
+        if (self._max_x < self._x_position):
             self._stillness_frame_count += 1;
         else:
+            self._max_x = self._x_position;
             self._stillness_frame_count = 0;
+        
+        
         return self._stillness_frame_count;
     
     @property
@@ -409,13 +424,15 @@ class SuperMarioBrosEnv(NESEnv):
         wideScreen = [sideArray[i] + centerArray[i] + sideArray[i] for i in range(13)];
         #[print(wideScreen[i]) for i in range(len(wideScreen))];
         leftIndex = math.floor(self._x_position/16)%16+16-3;
-        rightIndex = math.floor(self._x_position/16)%16+16+4;
+        rightIndex = math.floor(self._x_position/16)%16+16+5;
         bottomIndex = math.floor(self._y_position/16)-3;
         #print(bottomIndex);
         #print('left index: ',leftIndex);
         #print('right index: ',rightIndex);
-        relevantSquare = [([wideScreen[i][j] for j in range(leftIndex,rightIndex)] if (0 <= i and i <= 13) else [0 for j in range(8)] ) for i in range(13-bottomIndex,5-bottomIndex,-1)];
-        #print(relevantSquare);
+        relevantSquare = [([wideScreen[i][j] for j in range(leftIndex,rightIndex)] if (0 <= i and i < 13) else [0 for j in range(8)] ) for i in range(13-bottomIndex,5-bottomIndex,-1)];
+        #print(len(relevantSquare));
+        #print(sum([len(relevantSquare[i]) for i in range(len(relevantSquare))]));
+        #[print(relevantSquare[i]) for i in range(8)];
         return relevantSquare;
     
 
@@ -426,12 +443,20 @@ class SuperMarioBrosEnv(NESEnv):
         self._time_last = 0
         self._x_position_last = 0
         self._stillness_frame_count = 0;
+        self._max_x = 0;
+        self._last_area = 0;
+        self._last_stage = 0;
+        self._last_level = 0;
 
     def _did_reset(self):
         """Handle any RAM hacking after a reset occurs."""
         self._time_last = self._time
         self._x_position_last = self._x_position
         self._stillness_frame_count = 0;
+        self._max_x = 0;
+        self._last_area = 0;
+        self._last_stage = 0;
+        self._last_level = 0;
 
     def _did_step(self, done):
         """
