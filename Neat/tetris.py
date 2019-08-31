@@ -42,6 +42,8 @@
 
 from random import randrange as rand
 import sys#pygame, sys
+import numpy
+from numpy import array
 from runnerConfiguration import RunnerConfig
 from PIL import Image, ImageDraw
 import baseGame
@@ -133,6 +135,7 @@ class TetrisRunnerConfig(RunnerConfig):
         self.cols = cols;
         self.rows = rows;
         self.cell_size = 20;
+        
         self.frames_per_drop = 8;
 
 class Tetris(baseGame.RunGame):
@@ -141,6 +144,7 @@ class Tetris(baseGame.RunGame):
                 self.width = self.runConfig.cell_size*self.runConfig.cols
                 self.height = self.runConfig.cell_size*self.runConfig.rows
                 self.side_panel_width = 300;
+                self.viewer = None;
                 self.init_game()
 
 
@@ -251,8 +255,24 @@ class Tetris(baseGame.RunGame):
             if (self.steps % 8 == 0):
                 self.drop();
 
+            #self.show_screen();
             
-
+        def show_screen(self):
+            # if the viewer isn't setup, import it and create one
+            if self.viewer is None:
+                from _image_viewer import ImageViewer
+                # get the caption for the ImageViewer
+                caption = 'Tetris';
+                # create the ImageViewer to display frames
+                self.viewer = ImageViewer(
+                    caption=caption,
+                    height=self.runConfig.rows,
+                    width=self.runConfig.cols,
+                )
+            # show the screen on the image viewer
+            self.screen = array([[colors[self.board[j][i]] for i in range(self.runConfig.cols)] for j in range(self.runConfig.rows)]);
+            self.viewer.show(self.screen)
+        
         def renderInput(self,inputs):
             self.screen = Image.new('RGBA',(self.width+self.side_panel_width,self.height),color=(0,0,0));
             self.processInput(inputs);
