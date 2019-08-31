@@ -397,19 +397,21 @@ class SuperMarioBrosEnv(NESEnv):
 
     @property
     def _stillness_frames(self):
-        if (self._last_level != self._level or self._last_area != self._area or self._last_stage != self._area)
+        if (self._last_level != self._level or self._last_area != self._area or self._last_stage != self._area):
             self._max_x = 0;
 
         self._last_level = self._level;
         self._last_area = self._area;
         self._last_stage = self._stage;
         
-        if (self._max_x < self._x_position):
+        if (self._max_x >= self._x_position):
             self._stillness_frame_count += 1;
         else:
             self._max_x = self._x_position;
             self._stillness_frame_count = 0;
-        
+        #print('stillness: {0}'.format(self._stillness_frame_count));
+        #print('current x: {0}'.format(self._x_position));
+        #print('max x: {0}'.format(self._max_x));
         
         return self._stillness_frame_count;
     
