@@ -13,8 +13,8 @@ continueRun = False;
 continueRunRun = 2;
 newRun = False;
 currentRun = 4;
-reRun = False;
-reRunGen = 180;
+reRun = True;
+reRunGen = 280;
 reRunRun = 0;
 steps_threshold = 600;
 
@@ -41,7 +41,7 @@ else:
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)
-    runner.render_worst_genome(reRunGen,config,'run_' + str(reRunRun),net=True);
+    #runner.render_worst_genome(reRunGen,config,'run_' + str(reRunRun),net=True);
     
     if (newRun):
         winner = runner.run(config,'run_' + str(currentRun));
