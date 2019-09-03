@@ -27,7 +27,7 @@ _ENEMY_Y_ADDRESSES_2 = [0x00CF, 0x00D0, 0x00D1, 0x00D2, 0x00D3]
 
 #RAM addresses for powerup x position - add two together
 _POWERUP_X_ADDRESS = 0x008C
-_SCREEN_PAGE_SHIFT = 0x0086
+_SCREEN_PAGE_SHIFT = 0x006D
 
 #RAM addresses for powerup y position - add two together
 _POWERUP_Y_ADDRESS_1 = 0x00BB
@@ -384,12 +384,12 @@ class SuperMarioBrosEnv(NESEnv):
 
     @property
     def _enemy_y_positions(self):
-        return [(255-self.ram[_ENEMY_Y_ADDRESSES_1[i]]) + (255 if self.ram[_ENEMY_Y_ADDRESSES_2[i]] == 0 else 0) for i in range(5)];
+        return [(255-self.ram[_ENEMY_Y_ADDRESSES_2[i]]) + (255 if self.ram[_ENEMY_Y_ADDRESSES_1[i]] < 1 else 0) for i in range(5)];
 
     @property
     def _powerup_position(self):
         return [self.ram[_POWERUP_X_ADDRESS] + self.ram[_SCREEN_PAGE_SHIFT]*0x100,
-                (255-self.ram[_POWERUP_Y_ADDRESS_1]) + (255 if self.ram[_POWERUP_Y_ADDRESS_2] == 0 else 0)];
+                (255-self.ram[_POWERUP_Y_ADDRESS_2]) + (255 if self.ram[_POWERUP_Y_ADDRESS_1] < 1 else 0)];
 
     @property
     def _enemy_types(self):
@@ -414,6 +414,28 @@ class SuperMarioBrosEnv(NESEnv):
         #print('max x: {0}'.format(self._max_x));
         
         return self._stillness_frame_count;
+
+    @property
+    def _enemy_array(self):
+        xs = self._enemy_x_positions;
+        ys = self._enemy_y_positions;
+        types = self._enemy_types;
+        existences = [self.ram[0x000F + i] for i in range(5)];
+        selfXPos = self._x_position;
+        selfYPos = self._y_position;
+        #print('x positions: {0}, y positions: {1}, types: {2}, existences: {3}, my x: {4}, my y: {5}'.format(xs,ys,types,existences,selfXPos,selfYPos));
+        result = [[0 for i in range(8)] for j in range(8)];
+        for i in range(5):
+            if (existences[i]):
+                relXBlock = int(round(((xs[i]-selfXPos)/16))+2);
+                relYBlock = int(round(((ys[i]-selfYPos)/16))+2);
+                #print(str((relXBlock,relYBlock)));
+                if (relXBlock in range(8) and relYBlock in range(8)):
+                    result[relYBlock][relXBlock] = types[i];
+        #print('enemies:');
+        #[print(result[7-i]) for i in range(8)];
+        return result;
+        
     
     @property
     def _blocks_array(self):
@@ -435,8 +457,13 @@ class SuperMarioBrosEnv(NESEnv):
         #print(len(relevantSquare));
         #print(sum([len(relevantSquare[i]) for i in range(len(relevantSquare))]));
         #[print(relevantSquare[i]) for i in range(8)];
+        #print('blocks:');
+        #[print(relevantSquare[7-i]) for i in range(8)]
         return relevantSquare;
-    
+
+##    @property
+##    def _output_array_sizes(self):
+##        return (8,8);
 
     # MARK: nes-py API calls
 
@@ -516,7 +543,8 @@ class SuperMarioBrosEnv(NESEnv):
             powerup_x=self._powerup_position[0],
             powerup_y=self._powerup_position[1],
             stillness_time=self._stillness_frames,
-            blocks=self._blocks_array
+            blocks=self._blocks_array,
+            enemies=self._enemy_array
         )
 
 
