@@ -30,6 +30,7 @@ class RunnerConfig:
 
         if (trial_fitness_aggregation == 'min'):
             self.fitnessFromArray = lambda fitnesses : min(fitnesses);
+
     def flattened_return_data(self):
         result = [];
         for datum in self.returnData:
@@ -38,6 +39,17 @@ class RunnerConfig:
             else:
                 result.append(datum);
         return result;
+
+    def return_data_shape(self):
+        result = [];
+        for datum in self.returnData:
+            if (isinstance(datum,IOData)):
+                result.append(datum.toNamedArray());
+                print('name array of {0}: {1}'.format(datum,datum.toNamedArray()));
+            else:
+                result.append(datum);
+        return result;          
+                
 
 
 def get_array_cell_names(array_size):
@@ -58,6 +70,19 @@ class IOData:
             return [self.name];
         if (self.data_type == 'array'):
             return [self.name + ' ' + x for x in get_array_cell_names(self.array_size)];
+
+    def toNamedArray(self):
+        return self.toNameArray(self.name,self.array_size,' ');
+
+    def toNameArray(self,name,shape,splitterChar):
+        result = [];
+        if (len(shape) == 1):
+            for i in range(shape[0]):
+                result.append(str(name) + splitterChar + str(i));
+        else:
+            for i in range(shape[0]):
+                result.append(self.toNameArray(str(name) + splitterChar + str(i),shape[1:],'-'));
+        return (name,result);
 
     @staticmethod
     def convertableType(datum):

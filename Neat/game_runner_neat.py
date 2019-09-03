@@ -130,7 +130,8 @@ class GameRunner:
 
         if (net):
             flattened_data = runnerConfig.flattened_return_data();
-            visualize.draw_net(config,genome,view=True,node_names=dict([(-i-1,flattened_data[i]) for i in range(len(flattened_data))]));
+            shaped_data = runnerConfig.return_data_shape();
+            visualize.draw_net(config,genome,view=True,node_names=dict([(-i-1,flattened_data[i]) for i in range(len(flattened_data))]),nodes_shape=shaped_data);
             
         if (runnerConfig.parallel and False):
             return;
@@ -160,7 +161,8 @@ class GameRunner:
         runnerConfig = self.runConfig;
         if (net):
             flattened_data = runnerConfig.flattened_return_data();
-            visualize.draw_net(config,genome,view=True,node_names=dict([(-i-1,flattened_data[i]) for i in range(len(flattened_data))]));
+            shaped_data = runnerConfig.return_data_shape();
+            visualize.draw_net(config,genome,view=True,node_names=dict([(-i-1,flattened_data[i]) for i in range(len(flattened_data))]),nodes_shape=shaped_data);
             
             
         if (runnerConfig.parallel and False):

@@ -116,7 +116,7 @@ def plot_species(statistics, view=False, filename='speciation.svg'):
 
 
 def draw_net(config, genome, view=False, filename='Digraph', node_names=None, show_disabled=True, prune_unused=False,
-             node_colors=None, fmt='svg'):
+             node_colors=None, fmt='svg',nodes_shape=None):
     """ Receives a genome and draws a neural network with arbitrary topology. """
     # Attributes for network nodes.
     if graphviz is None:
@@ -141,23 +141,42 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
 
     dot = graphviz.Digraph(format=fmt, node_attr=node_attrs)
 
-    inputs = set()
+    inputs = set();
+    namedInputs = dict();
     for k in config.genome_config.input_keys:
+        
         inputs.add(k)
         name = node_names.get(k, str(k))
-        input_attrs = {'style': 'filled',
-                       'shape': 'box'}
-        input_attrs['fillcolor'] = node_colors.get(k, 'lightgray')
-        dot.node(name, _attributes=input_attrs)
+        namedInputs[name] = k
+    
+    
+    input_attrs = {
+        'style': 'filled',
+        'shape': 'box',
+        'fontsize': '9',
+        'height': '0.2',
+        'width': '0.2'}
+    input_attrs['fillcolor'] = node_colors.get(k, 'lightgray')
+    if (nodes_shape is None):
+        for name,k in namedInputs.items():
+            dot.node(name, _attributes=input_attrs)
+    else:
+        inGraph = (get_nested_graph(namedInputs,inputs,nodes_shape,fmt,input_attrs));
+        inGraph.attr(label='Inputs');
+        dot.subgraph(inGraph);
+
+        
 
     outputs = set()
+    outputGraph = graphviz.Digraph(format=fmt,node_attr=node_attrs,graph_attr={'label':'Outputs'},name='cluster');
     for k in config.genome_config.output_keys:
         outputs.add(k)
         name = node_names.get(k, str(k))
         node_attrs = {'style': 'filled'}
         node_attrs['fillcolor'] = node_colors.get(k, 'lightblue')
         node_attrs['tooltip'] = 'bias: {0}, response: {1}'.format(str(genome.nodes[k].bias),str(genome.nodes[k].response));
-        dot.node(name, _attributes=node_attrs)
+        outputGraph.node(name, _attributes=node_attrs)
+    dot.subgraph(outputGraph);
 
     if prune_unused:
         connections = set()
@@ -191,12 +210,17 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
             #if cg.input not in used_nodes or cg.output not in used_nodes:
             #    continue
             input, output = cg.key
+
             a = node_names.get(input, str(input))
             b = node_names.get(output, str(output))
+            constraint = 'true';
+            if (nodes_shape is not None and True and input in config.genome_config.output_keys):
+                constraint = 'false'
+            
             style = 'solid' if cg.enabled else 'dotted'
             color = 'green' if cg.weight > 0 else 'red'
             width = str(0.1 + abs(cg.weight / 5.0))
-            dot.edge(a, b, _attributes={'style': style, 'color': color, 'penwidth': width,'tooltip': 'weight: ' + str(cg.weight)})
+            dot.edge(a, b, _attributes={'style': style, 'color': color, 'penwidth': width,'tooltip': 'weight: ' + str(cg.weight),'constraint':constraint})
 
     filepath =  os.path.join(os.environ['HOME'], '\\Documents\\' + filename + '.gv');
     print(filepath)
@@ -204,3 +228,26 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
     
 
     return dot
+
+##def getBlah(namedNodes,nodes,nodes_shape,format,node_attrs,graph_name=""):
+##    graph = graphviz.Digraph(name='cluster ' + str(graph_name),node_attr=node_attrs);
+##    for name_shape in nodes_shape:
+##        if (isinstance(name_shape,tuple)):
+##            x = 3;
+    
+    
+
+def get_nested_graph(namedNodes,nodes,nodes_shape,format,node_attrs,graph_name=""):
+    graph = graphviz.Digraph(name='' + str(graph_name),node_attr=node_attrs);
+    graph.attr(label=str(graph_name));
+    print(nodes_shape);
+    for name_shape in nodes_shape[:-1]:
+        if (isinstance(name_shape,tuple)):
+            print('is tuple: {0}'.format(name_shape));
+            graph.subgraph(get_nested_graph(namedNodes,nodes,name_shape[1],format,node_attrs,graph_name=name_shape[0]));
+        else:
+            print('is not tuple: {0}'.format(name_shape));
+            graph.node(str(name_shape));
+        
+    return graph;
+        
