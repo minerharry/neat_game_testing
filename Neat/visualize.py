@@ -240,13 +240,13 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
 def get_nested_graph(namedNodes,nodes,nodes_shape,format,node_attrs,graph_name=""):
     graph = graphviz.Digraph(name='' + str(graph_name),node_attr=node_attrs);
     graph.attr(label=str(graph_name));
-    print(nodes_shape);
+    #print(nodes_shape);
     for name_shape in nodes_shape[:-1]:
         if (isinstance(name_shape,tuple)):
-            print('is tuple: {0}'.format(name_shape));
+            #print('is tuple: {0}'.format(name_shape));
             graph.subgraph(get_nested_graph(namedNodes,nodes,name_shape[1],format,node_attrs,graph_name=name_shape[0]));
         else:
-            print('is not tuple: {0}'.format(name_shape));
+            #print('is not tuple: {0}'.format(name_shape));
             graph.node(str(name_shape));
         
     return graph;

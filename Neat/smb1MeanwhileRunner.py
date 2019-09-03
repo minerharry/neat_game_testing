@@ -13,9 +13,9 @@ continueRun = False;
 continueRunRun = 2;
 newRun = False;
 currentRun = 4;
-reRun = False;
-reRunGen = 180;
-reRunRun = 0;
+reRun = True;
+reRunGen = 6;
+reRunRun = 4;
 steps_threshold = 600;
 
 
@@ -26,7 +26,7 @@ def getRunning(inputs):
     return (not(inputs['done']) and (not inputs['stillness_time'] > steps_threshold));
 
 
-runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=[5]),IOData('enemy_y','array',array_size=[5]),IOData('blocks','array',array_size=[8,8]),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
+runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=[5]),IOData('enemy_y','array',array_size=[5]),IOData('blocks','array',array_size=[8,8]),IOData('enemies','array',array_size=(8,8)),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
 runConfig.playback_fps = 20;
 runConfig.fitness_collection_type='continuous'
 print(runConfig.gameName);
@@ -41,7 +41,7 @@ else:
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)
-    runner.render_worst_genome(reRunGen,config,'run_' + str(reRunRun),net=True);
+    #runner.render_worst_genome(reRunGen,config,'run_' + str(reRunRun),net=True);
     
     if (newRun):
         winner = runner.run(config,'run_' + str(currentRun));
