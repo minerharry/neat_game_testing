@@ -41,13 +41,16 @@ _POWERUP_Y_ADDRESS_2 = 0x00D4
 _STAGE_OVER_ENEMIES = np.array([0x2D, 0x31])
 
 
+class idHolder:
+    def __init__(self,id):
+        self.id = id;
 class SuperMarioBrosEnv(NESEnv):
     """An environment for playing Super Mario Bros with OpenAI Gym."""
 
     # the legal range of rewards for each step
     reward_range = (-15, 15)
 
-    def __init__(self, rom_mode='vanilla', lost_levels=False, target=None):
+    def __init__(self, window_name=None,rom_mode='vanilla', lost_levels=False, target=None):
         """
         Initialize a new Super Mario Bros environment.
 
@@ -62,6 +65,10 @@ class SuperMarioBrosEnv(NESEnv):
             None
 
         """
+
+        #set gym spec id if given
+        if (window_name is not None):
+            self.spec = {'id':window_name};
         # decode the ROM path based on mode and lost levels flag
         rom = rom_path(lost_levels, rom_mode)
         # initialize the super object with the ROM path
@@ -87,7 +94,10 @@ class SuperMarioBrosEnv(NESEnv):
         # create a backup state to restore from on subsequent calls to reset
         self._backup()
 
-
+    def setWindowName(self,name):
+        self.spec = idHolder(name);
+        
+        
     @property
     def is_single_stage_env(self):
         """Return True if this environment is a stage environment."""

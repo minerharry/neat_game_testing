@@ -1,7 +1,9 @@
 class RunnerConfig:
 
-    def __init__(self,gameFitnessFunction,gameRunningFunction,recurrent=False,trial_fitness_aggregation='average',custom_fitness_aggregation=None,time_step=0.05,num_trials=10,parallel=False,returnData=[],gameName='game',num_generations=300):
+    def __init__(self,gameFitnessFunction,gameRunningFunction,logging=False,logPath='',recurrent=False,trial_fitness_aggregation='average',custom_fitness_aggregation=None,time_step=0.05,num_trials=10,parallel=False,returnData=[],gameName='game',num_generations=300):
 
+        self.logging = logging;
+        self.logPath = logPath;
         self.generations = num_generations;
         self.recurrent = recurrent;
         self.gameName = gameName;

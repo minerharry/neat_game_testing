@@ -6,6 +6,7 @@ import os
 import visualize
 import random
 import concurrent.futures
+from logReporting import LoggingReporter
 from renderer import Renderer as RendererReporter
 from videofig import videofig as vidfig
 from neat.six_util import iteritems, itervalues
@@ -46,6 +47,9 @@ class GameRunner:
         else:
             continuing = True;
         stats = neat.StatisticsReporter();
+        if (self.runConfig.logging):
+            logReporter = LoggingReporter(self.runConfig.logPath,True);
+            pop.add_reporter(logReporter);
         pop.add_reporter(stats);
         pop.add_reporter(neat.StdOutReporter(True));
 

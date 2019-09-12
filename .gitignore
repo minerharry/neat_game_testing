@@ -1,2 +1,6 @@
 **/checkpoints
 *.pyc
+*/*.pyc
+*.cpython-37.pyc
+
+
