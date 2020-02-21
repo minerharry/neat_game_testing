@@ -3,6 +3,7 @@ import random
 from PIL import Image, ImageDraw, ImageFont
 import math
 import collections.abc
+import numpy as np
 
 def flatten(l):
     for el in l:
@@ -38,6 +39,9 @@ class RunGame(ABC):
                 result.append(mappedData.get(datum));
             elif (datum.data_type == 'array'):
                 result += listifyArray(mappedData.get(datum.name));
+            elif (datum.data_type == 'ndarray'):
+                result += mappedData.get(datum.name).tolist();
+        
         return result;
 
     

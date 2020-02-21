@@ -8,9 +8,9 @@ import neat
 game = EvalGame(Tetris);
 continueRun = False;
 continueRunRun = 5;
-newRun = False;
-currentRun = 5;
-reRun = True;
+newRun = True;
+currentRun = 6;
+reRun = False;
 reRunGen = 11;
 reRunRun = 5;
 steps_threshold = 10000;

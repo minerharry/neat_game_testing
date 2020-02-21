@@ -10,9 +10,9 @@ smb1Env = gym_super_mario_bros.make('SuperMarioBros-v0')
 smb1Env.reset();
 game = EvalGame(NesPyGymGame,env=smb1Env);
 continueRun = False;
-continueRunRun = 6;
+continueRunRun = 9;
 newRun = True;
-currentRun = 6;
+currentRun = 9;
 reRun = False;
 reRunGen = 8;
 reRunRun = 1;

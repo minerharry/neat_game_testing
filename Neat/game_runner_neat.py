@@ -44,6 +44,7 @@ class GameRunner:
         if (pop is None):
             pop = neat.Population(config);
             continuing = False;
+            print(pop.population[1]);
         else:
             continuing = True;
         stats = neat.StatisticsReporter();

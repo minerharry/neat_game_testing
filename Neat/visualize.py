@@ -122,6 +122,8 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
     if graphviz is None:
         warnings.warn("This display is not available due to a missing optional dependency (graphviz)")
         return
+    print(node_names);
+
 
     if node_names is None:
         node_names = {}
@@ -148,6 +150,8 @@ def draw_net(config, genome, view=False, filename='Digraph', node_names=None, sh
         inputs.add(k)
         name = node_names.get(k, str(k))
         namedInputs[name] = k
+
+    print(namedInputs);
     
     
     input_attrs = {
