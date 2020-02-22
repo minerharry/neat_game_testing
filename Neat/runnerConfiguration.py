@@ -3,7 +3,7 @@ import numpy as np
 
 class RunnerConfig:
 
-    def __init__(self,gameFitnessFunction,gameRunningFunction,logging=False,logPath='',recurrent=False,trial_fitness_aggregation='average',custom_fitness_aggregation=None,time_step=0.05,num_trials=10,parallel=False,returnData=[],gameName='game',num_generations=300):
+    def __init__(self,gameFitnessFunction,gameRunningFunction,logging=False,logPath='',recurrent=False,trial_fitness_aggregation='average',custom_fitness_aggregation=None,time_step=0.05,num_trials=10,parallel=False,returnData=[],gameName='game',num_generations=300,fitness_collection_type=None):
 
         self.logging = logging;
         self.logPath = logPath;
@@ -15,7 +15,7 @@ class RunnerConfig:
         self.numTrials = num_trials;
         self.fitnessFromGameData = gameFitnessFunction;
         self.gameStillRunning = gameRunningFunction;
-        
+        self.fitness_collection_type = fitness_collection_type;
 
         self.returnData = returnData;
 ##        for (datum in returnData):
