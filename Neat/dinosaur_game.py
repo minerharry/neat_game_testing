@@ -10,19 +10,19 @@ class DinosaurGame(RunGame):
     player_hitbox_size = (100,100)
     player_duck_size = (140,70)
     obstacle_type_info = [(40,80,40),(60,120,60),(120,80,40),(60,50,35),(60,50,100),(60,50,180)]; #list of tuples of (width, height, pos); 0: small cactus, 1: large cactus; 2 many cacti; 3, low bird; 4, med bird; 5, high bird
-    gravity = 1.2;
-    screen_width = 600;
+    gravity = 1.1;
+    screen_width = 1000;
     screen_height = 400;
-    bird_step_threshold = 2000;
-    max_obstacles = 4;
-    min_obstacle_delay = 120;
-    max_obstacle_delay = 200;
-    jump_velocity = 16;
+    bird_step_threshold = 1000;
+    max_obstacles = 3;
+    min_obstacle_delay = 55;
+    max_obstacle_delay = 120;
+    jump_velocity = 20;
 
     def __init__(self,runnerConfig,kwargs):
         super().__init__(runnerConfig,kwargs);
         self.obstacles = []; #list of lists (length 4): xpos, ypos, width, height; pos is of center of hitbox rectangle
-        self.xVel = 1;
+        self.xVel = 10;
         self.yVel = 0;
         self.yPos = 0;
         self.xPos = 100; #so obstacles can despawn at xpos = -obstacle.width/2;
@@ -43,21 +43,23 @@ class DinosaurGame(RunGame):
             self.obstacle_timer += 1;
             if (self.obstacle_timer > self.obstacle_delay):
                 self.obstacle_timer = 0;
-                self.obstacle_delay = random.randint(self.min_obstacle_delay,self.max_obstacle_delay);
+                self.obstacle_delay = random.randint(int(self.min_obstacle_delay),int(self.max_obstacle_delay));
                 self.obstacles.append(self.new_obstacle());
 
         
     def renderInput(self,inputs):
         self.processInput(inputs);
-        result = Image.new('rgb',(self.screen_width,self.screen_height),color=(255,255,255));
+        result = Image.new('RGB',(self.screen_width,self.screen_height),color=(255,255,255));
         draw = ImageDraw.Draw(result);
         outlineColor = (0,0,0);
         hitbox = self.getHitbox();
-        draw.rectangle((self.xPos-hitbox[0]/2,self.screen_height-(self.yPos+hitbox[1]),(self.xPos+hitbox[0]/2,self.yPos)),outline=outlineColor);
+        draw.rectangle((self.xPos-hitbox[0]/2,self.screen_height-(self.yPos+hitbox[1]),(self.xPos+hitbox[0]/2,self.screen_height-self.yPos)),outline=outlineColor);
         
         outlineColor = (255,0,0);
         for obstacle in self.obstacles:
             draw.rectangle(((obstacle[0]-obstacle[2]/2,self.screen_height-(obstacle[1]+obstacle[3]/2)),(obstacle[0]+obstacle[2]/2,self.screen_height-(obstacle[1]-obstacle[3]/2))),outline=outlineColor);
+        fitness = self.runConfig.fitnessFromGameData(self.getMappedData());
+        draw.text((10,10),f"Fitness: {fitness}",fill=(0,0,0));
         return result;
 
     def getHitbox(self):
@@ -89,7 +91,7 @@ class DinosaurGame(RunGame):
             data = self.obstacles[i];
             data[0] -= self.xVel;
             if (data[0] < -data[2]/2):
-                data = [];
+                self.obstacles[i] = [];
         for i in range(self.obstacles.count([])):
             self.obstacles.remove([]);
         
@@ -97,7 +99,7 @@ class DinosaurGame(RunGame):
 
     def new_obstacle(self):
         type_offset = 0;
-        if (self.steps > 1000 and random.random > 0.15):
+        if (self.steps > 1000 and random.random() > 0.15):
             type_offset = 3;
         return self.make_obstacle(random.randint(0,2)+type_offset);   
 
@@ -106,7 +108,7 @@ class DinosaurGame(RunGame):
         return [self.screen_width,type_info[2],type_info[0],type_info[1]];
         
     def getOutputData(self):
-        return {"dead":self.dead,"speed":self.xVel,"near_obstacles":self.getNearestObstacles()};
+        return {"yPos":self.yPos,"dead":self.dead,"speed":self.xVel,"near_obstacles":self.getNearestObstacles()};
 
     def getNearestObstacles(self):
         self.obstacles.sort(key=lambda data: data[0]);

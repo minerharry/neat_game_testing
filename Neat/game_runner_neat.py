@@ -106,7 +106,7 @@ class GameRunner:
                     
                 
 
-    def replay_best(self,generation,config,run_name,net=False,randomReRoll=False):
+    def replay_best(self,generation,config,run_name,net=False,randomReRoll=False,multi_trials=False):
         file = 'checkpoints\\games\\'+self.runConfig.gameName.replace(' ','_')+'\\'+run_name.replace(' ','_')+'\\run-checkpoint-' + str(generation);
         pop = neat.Checkpointer.restore_checkpoint(file);
         #self.eval_genomes(list(iteritems(pop.population)),config);
@@ -117,19 +117,19 @@ class GameRunner:
             if best is None or g.fitness > best.fitness:
                 best = g
         print(best);
-        self.render_genome(best,config,net=net);
+        self.render_genome(best,config,net=net,use_trials=multi_trials);
         
 
-    def render_genome(self,genome,config,net=False):
+    def render_genome(self,genome,config,net=False,use_trials=False):
         if (self.runConfig.recurrent):
-            self.render_genome_recurrent(genome,config,net=net);
+            self.render_genome_recurrent(genome,config,net=net,use_trials=use_trials);
         else:
-            self.render_genome_feedforward(genome,config,net=net);
+            self.render_genome_feedforward(genome,config,net=net,use_trials=use_trials);
 
 
 
     #render a genome with the game as a recurrent neural net
-    def render_genome_recurrent(self, genome, config,net=False):
+    def render_genome_recurrent(self, genome, config,net=False,use_trials=False):
         runnerConfig = self.runConfig;
         time_const = runnerConfig.time_step;
 
@@ -142,27 +142,29 @@ class GameRunner:
             return;
             #TODO: implement parallel game processing
         else:
-            net = neat.ctrnn.CTRNN.create(genome,config,time_const);
-            runningGame = self.game.start(runnerConfig);
-            images = [];
-            while (runningGame.isRunning()):
-                    #get the current inputs from the running game, as specified by the runnerConfig
-                gameData = runningGame.getData();
+            num_trials = 1 if not use_trials else runnerConfig.numTrials;
+            for i in range(num_trials):
+                net = neat.ctrnn.CTRNN.create(genome,config,time_const);
+                runningGame = self.game.start(runnerConfig);
+                images = [];
+                while (runningGame.isRunning()):
+                        #get the current inputs from the running game, as specified by the runnerConfig
+                    gameData = runningGame.getData();
 
-                gameInput = net.advance(gameData, time_const, time_const);
+                    gameInput = net.advance(gameData, time_const, time_const);
 
-                images.append(runningGame.renderInput(gameInput));
+                    images.append(runningGame.renderInput(gameInput));
 
-                        
-            runningGame.close();
-            get_genome_frame.images = images;
-            get_genome_frame.initialized = False;
-            vidfig(len(images),get_genome_frame,play_fps=runnerConfig.playback_fps);
+                            
+                runningGame.close();
+                get_genome_frame.images = images;
+                get_genome_frame.initialized = False;
+                vidfig(len(images),get_genome_frame,play_fps=runnerConfig.playback_fps);
 
         
 
     #render a genome with the game as a feedforward neural net
-    def render_genome_feedforward(self, genome, config,net=False):
+    def render_genome_feedforward(self, genome, config,net=False,use_trials=False):
         runnerConfig = self.runConfig;
         if (net):
             flattened_data = runnerConfig.flattened_return_data();
@@ -174,23 +176,24 @@ class GameRunner:
             return;
             #TODO: implement parallel game processing
         else:
-            
-            net = neat.nn.FeedForwardNetwork.create(genome,config);
-            runningGame = self.game.start(runnerConfig);
-            images = [];
-            while (runningGame.isRunning()):
-                #get the current inputs from the running game, as specified by the runnerConfig
-                gameData = runningGame.getData();
+            num_trials = 1 if not use_trials else runnerConfig.numTrials;
+            for i in range(num_trials):
+                net = neat.nn.FeedForwardNetwork.create(genome,config);
+                runningGame = self.game.start(runnerConfig);
+                images = [];
+                while (runningGame.isRunning()):
+                    #get the current inputs from the running game, as specified by the runnerConfig
+                    gameData = runningGame.getData();
 
-                gameInput = net.activate(gameData);
+                    gameInput = net.activate(gameData);
 
-                images.append(runningGame.renderInput(gameInput));
+                    images.append(runningGame.renderInput(gameInput));
 
-                        
-            runningGame.close();
-            get_genome_frame.images = images;
-            get_genome_frame.initialized = False;
-            vidfig(len(images),get_genome_frame,play_fps=runnerConfig.playback_fps);
+                            
+                runningGame.close();
+                get_genome_frame.images = images;
+                get_genome_frame.initialized = False;
+                vidfig(len(images),get_genome_frame,play_fps=runnerConfig.playback_fps);
 
             
     def eval_genomes(self,genomes,config):

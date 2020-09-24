@@ -9,11 +9,11 @@ game = EvalGame(DinosaurGame);
 continueRun = False;
 newRun = False;
 reRun = True;
-run = 0;
+run = 4;
 
-reRunGen = 25;
+reRunGen = 154;
 
-max_length = 100000;
+max_length = 10000;
 
 def getFitness(inputs):
     return inputs['steps']
@@ -24,10 +24,10 @@ game_name = 'dinosaur_game'
 
 
 runConfig = RunnerConfig(getFitness,getRunning,parallel=False,gameName=game_name,
-                         returnData=['speed',IOData('near_obstacles','array',array_size=[3,4])],num_trials=20,num_generations=None);
+                         returnData=['yPos','speed',IOData('near_obstacles','array',array_size=[3,4])],num_trials=20,num_generations=None);
 runConfig.logging = True;
 runConfig.logPath = f'logs\\{game_name}\\run-{run}-log.txt';
-runConfig.playback_fps = 20;
+runConfig.playback_fps = 120;
 print(runConfig.gameName);
 
 runner = GameRunner(game,runConfig);
@@ -46,4 +46,4 @@ else:
         winner = runner.run(config,'run_' + str(run));
         print('\nBest genome:\n{!s}'.format(winner))
     if (reRun):
-        runner.replay_best(reRunGen,config,'run_' + str(run),net=True,randomReRoll=True);
+        runner.replay_best(reRunGen,config,'run_' + str(run),net=True,multi_trials=True);

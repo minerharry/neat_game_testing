@@ -6,12 +6,12 @@ import os
 import neat
 
 game = EvalGame(DinosaurGame);
-continueRun = False;
-newRun = True;
+continueRun = True;
+newRun = False;
 reRun = False;
-run = 0;
+run = 4;
 
-reRunGen = 280;
+reRunGen = 50;
 
 max_length = 100000;
 
@@ -24,7 +24,7 @@ game_name = 'dinosaur_game'
 
 
 runConfig = RunnerConfig(getFitness,getRunning,parallel=False,gameName=game_name,
-                         returnData=['speed',IOData('near_obstacles','array',array_size=[3,4])],num_trials=20,num_generations=None);
+                         returnData=['yPos','speed',IOData('near_obstacles','array',array_size=[3,4])],num_trials=20,num_generations=None);
 runConfig.logging = True;
 runConfig.logPath = f'logs\\{game_name}\\run-{run}-log.txt';
 runConfig.playback_fps = 20;
