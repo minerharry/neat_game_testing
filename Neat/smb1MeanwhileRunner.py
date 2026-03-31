@@ -14,7 +14,7 @@ continueRunRun = 2;
 newRun = False;
 currentRun = 4;
 reRun = True;
-reRunGen = 1;
+reRunGen = 6;
 reRunRun = 9;
 
 steps_threshold = 600;
@@ -48,4 +48,6 @@ else:
         winner = runner.run(config,'run_' + str(currentRun));
         print('\nBest genome:\n{!s}'.format(winner))
     if (reRun):
+        runner.render_genome_by_id(290,reRunGen,config,'run_' + str(reRunRun),net=True);
+
         runner.replay_best(reRunGen,config,'run_' + str(reRunRun),net=True,randomReRoll=True);

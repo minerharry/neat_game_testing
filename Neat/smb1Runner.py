@@ -12,7 +12,7 @@ game = EvalGame(NesPyGymGame,env=smb1Env);
 continueRun = False;
 continueRunRun = 8
 newRun = True;
-currentRun = 8;
+currentRun = 9;
 reRun = False;
 reRunGen = 8;
 reRunRun = 1;

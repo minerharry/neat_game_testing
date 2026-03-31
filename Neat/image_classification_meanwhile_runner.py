@@ -17,8 +17,8 @@ continueRunRun = 0;
 newRun = False;
 currentRun = 1;
 reRun = True;
-reRunGen = 2;
-reRunRun = 0;
+reRunGen = 289;
+reRunRun = 1;
 
 def getFitness(inputs):
     return (1 if inputs['digit'] == inputs['best_digit'] else 0);
@@ -51,4 +51,6 @@ else:
         winner = runner.run(config,'run_' + str(currentRun));
         print('\nBest genome:\n{!s}'.format(winner))
     if (reRun):
+        #runner.render_genome_by_id(626,reRunGen,config,'run_' + str(reRunRun),net=True);
+
         runner.replay_best(reRunGen,config,'run_' + str(reRunRun),net=True,randomReRoll=True);

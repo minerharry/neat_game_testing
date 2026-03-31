@@ -15,7 +15,7 @@ game = EvalGame(ImageClassification,images=imageset);
 continueRun = False;
 continueRunRun = 0;
 newRun = True;
-currentRun = 0;
+currentRun = 2;
 reRun = False;
 reRunGen = 280;
 reRunRun = 0;

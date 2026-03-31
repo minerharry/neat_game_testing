@@ -1,6 +1,9 @@
 # neat_game_testing
 A collection of games and tests that use NEAT-python to learn how to play 
 
+OUTDATED, please see https://github.com/minerharry/AI_game_router for the most updated version
+
+
 Streamed on https://www.twitch.tv/minerharry 24/7 when running
 
 __Resources:__

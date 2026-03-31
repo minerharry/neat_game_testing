@@ -14,8 +14,8 @@ continueRunRun = 0;
 newRun = False;
 currentRun = 0;
 reRun = True;
-reRunGen = 380;
-reRunRun = 0;
+reRunGen = 1394;
+reRunRun = 9;
 steps_threshold = 600;
 
 smb1Env.setWindowName('SuperMarioBros-v0 run {0}'.format(continueRunRun if continueRun else (currentRun if newRun else reRunRun)));
