@@ -1,33 +1,36 @@
 from game_runner_neat import GameRunner 
 from runnerConfiguration import RunnerConfig, IOData
 from baseGame import EvalGame
-from gym_game_interface import NESGymRunnerConfig,NesPyGymGame
+from image_classification import ImageClassification
+from digit_data import mnist_loader
 import os
 import neat
-import gym_super_mario_bros
 
-smb1Env = gym_super_mario_bros.make('SuperMarioBros-v0')
-smb1Env.reset();
-game = EvalGame(NesPyGymGame,env=smb1Env);
+
+imageset_size = 2000;
+imageset = mnist_loader.load_data()[0];
+imageset = (imageset[0][:imageset_size+2],imageset[1][:imageset_size+2]);
+
+game = EvalGame(ImageClassification,images=imageset);
 continueRun = False;
-continueRunRun = 2;
+continueRunRun = 0;
 newRun = False;
-currentRun = 4;
+currentRun = 1;
 reRun = True;
-reRunGen = 1;
-reRunRun = 9;
-
-steps_threshold = 600;
-
+reRunGen = 2;
+reRunRun = 0;
 
 def getFitness(inputs):
-    return inputs['gym-reward'];
+    return (1 if inputs['digit'] == inputs['best_digit'] else 0);
 
 def getRunning(inputs):
-    return (not(inputs['done']) and (not inputs['stillness_time'] > steps_threshold));
+    return inputs['steps'] <= imageset_size;
 
 
-runConfig = NESGymRunnerConfig(getFitness,getRunning,parallel=False,gameName='gym_nes_smb1',returnData=['stage','status','world','x_pos','y_pos',IOData('enemy_type','array',array_size=[5]),IOData('enemy_x','array',array_size=[5]),IOData('enemy_y','array',array_size=[5]),IOData('blocks','array',array_size=[8,8]),IOData('enemies','array',array_size=(8,8)),'powerup_x','powerup_y'],num_trials=1,num_generations=None);
+runConfig = RunnerConfig(getFitness,getRunning,parallel=False,gameName='image_classification',
+                         returnData=[IOData('image','ndarray',array_size=[784])],num_trials=1,num_generations=None);
+runConfig.logging = True;
+runConfig.logPath = f'logs\\image-classification\\run-{currentRun}-log.txt';
 runConfig.playback_fps = 20;
 runConfig.fitness_collection_type='continuous'
 print(runConfig.gameName);
@@ -38,7 +41,7 @@ if (continueRun):
     print('\nBest genome:\n{!s}'.format(winner));
 else:
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-gym-nes-smb1')
+    config_path = os.path.join(local_dir, 'config-image-classification')
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                              neat.DefaultSpeciesSet, neat.DefaultStagnation,
                              config_path)

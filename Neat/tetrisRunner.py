@@ -8,8 +8,8 @@ import neat
 game = EvalGame(Tetris);
 continueRun = False;
 continueRunRun = 5;
-newRun = False;
-currentRun = 5;
+newRun = True;
+currentRun = 6;
 reRun = True;
 reRunGen = 11;
 reRunRun = 5;
